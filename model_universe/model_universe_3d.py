@@ -8,10 +8,10 @@ import plotly.graph_objects as go
 
 
 # load universe parameters and build =======
-def load_universe(): # edit for different JSON files
+def load_universe(file="universe_parameters.json"): # edit for different JSON files
     spheres = []
 
-    with open("universe_parameters.json", "r") as f:
+    with open(file, "r") as f:
         spheres = json.load(f)
 
     dim = 32 # for now
