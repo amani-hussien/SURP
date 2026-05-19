@@ -6,7 +6,29 @@ import scipy.ndimage as sci
 
 
 # load universe parameters and build =======
-def load_universe(file="universe_parameters.json"): # edit for different JSON files
+
+def load_universe(file="universe_parameters.json"): 
+    """
+    Load a set of Gaussian spheres from a JSON file and generate a 3D
+    density field. 
+
+    Each sphere contributes a Gaussian blob defined by its center, amplitude
+    and standard deviation. The resulting field is made into a 3D volume 
+    and then reduced to a 2D slice in the middle.
+
+    Parameters:
+    file: str, optional
+        path to JSON file containing sphere parameters.
+
+    Returns:
+    X: np.ndarray 
+        3D meshgrid array of coordinates with shape (dim, dim, dim)
+    Y: np.ndarray 
+        3D meshgrid array of coordinates with shape (dim, dim, dim)
+    Z: np.ndarray 
+        3D meshgrid array of coordinates with shape (dim, dim, dim)
+
+    """
     spheres = []
 
     with open(file, "r") as f:
@@ -48,7 +70,33 @@ def load_universe(file="universe_parameters.json"): # edit for different JSON fi
 
 
 # plot of tracer density field ===================
+
 def plot_universe(X, Y, Z, box):
+    """
+    Visualize a density fueld using 3D volumetric rendering. 
+
+    This function uses an interactive plotly volume plot. 
+
+
+    Parameters:
+    X : np.ndarray
+        3D array of x-coordinates defining spatial grid.
+
+    Y : np.ndarray
+        3D array of y-coordinates defining spatial grid.
+
+    Z : np.ndarray
+        3D array of z-coordinates defining spatial grid.
+
+    box : np.ndarray
+        3D scalar field representing the density values to
+        visualize.
+
+    Returns:
+    None
+        Displays interactive plotly volume rendering.
+
+    """
     fig = plotly.Figure(data=plotly.Volume(
         x=X.flatten(), # flatten arrays into 1D lists
         y=Y.flatten(),
@@ -56,8 +104,8 @@ def plot_universe(X, Y, Z, box):
         value=box.flatten(),
         isomin=0,
         isomax=box.max(),
-        opacity=0.08,  # lower = more transparent visually
-        surface_count=60 # more rendering
+        opacity=0.08,  
+        surface_count=60 
     ))
 
     fig.update_layout(template = "plotly_dark")
@@ -67,19 +115,80 @@ def plot_universe(X, Y, Z, box):
 
 # overdensity field ==============
 def overdensity_field(density_field):
+    """
+    Compute the overdensity field from a density field. 
+
+    Parameters
+    density_field : np.ndarray
+        input density field 
+
+    Returns
+    np.ndarray
+        overdensity field with mean value of approximately zero,
+        positive values indicate overdense regions, while negative
+        values indicate underdense regions
+    """
     return (density_field/np.mean(density_field)) - 1
 
 def gaussian_filter(box, R=3):
-    return sci.gaussian_filter(box, sigma=R, mode='wrap') # theres a radius= also
+    """
+    Apply a Gaussian smoothing filter to the density field.
+
+    Parameters:
+    box: np.ndarray
+        input density field
+    
+    R: float, optional 
+        standard deiation (sigma) of Gaussian kernel
+
+    Returns:
+    np.ndarray
+        smoothed density field
+    """
+    return sci.gaussian_filter(box, sigma=R, mode='wrap')
 
 # mark and marked density field =================
-def marked_overdensity_field(tracer_field, downsampled_field,  delta_star=10, p=7):
-    mark = ((1+delta_star)/(1+delta_star+downsampled_field))**p
+def marked_overdensity_field(tracer_field, smoothed_field,  delta_star=10, p=7):
+    """
+    Compute a marked overdensity field. A mark function is 
+    applied to a smoothed overdensity field to reweight densities. 
+    The marked field enhances/suppresses various structures. 
+
+    Parameters:
+    tracer_field: np.ndarray
+        original overdensity field of tracers
+    smoothed_field: np.ndarray
+        smoothed overdensity field used to compute mark
+    delta_star: float, optional
+        dimensionless parameter
+    p: float, optional
+        dimensionless parameter 
+    
+    Returns:
+    mark: np.ndarray
+        the mark field
+    marked_field: np.ndarray
+        marked overdensity field
+    """
+    mark = ((1+delta_star)/(1+delta_star+smoothed_field))**p
     marked_field = (1+tracer_field)*mark-1
     return mark, marked_field
 
 # plot heatmap ===================================
 def plot_heatmap(density_field, title='density field'):
+    """
+    Display 2D heatmap of a density field.
+
+    Parameters:
+    density_field: np.ndarray
+        2D array of field to visualize
+    title: str, optional
+        title of plot
+    
+    Returns: 
+    None
+        Displays the plot 
+    """
     plt.imshow(density_field, cmap='plasma')
     plt.colorbar()
     plt.title(title)
