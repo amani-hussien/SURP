@@ -31,7 +31,7 @@ def load_universe(file="universe_parameters.json"):
     """
     spheres = []
 
-    with open(file, "r") as f:
+    with open("universe_parameters.json", "r") as f:
         spheres = json.load(f)
 
     dim = 32 # for now
