@@ -278,6 +278,29 @@ def plot_isosurface(density_field, title='density field'):
 
     fig.show()
 
+# code to generate random spheres
+def load_random_universe(): 
+    """
+    Note: call this first, then call u.load_universe() in notebook.
+    """
+    spheres = []
+    # generate spheres
+    N=200 # fixed in all simulations
+    for _ in range(N):
+        sphere = {
+            "cx": float(np.random.rand()),
+            "cy": float(np.random.rand()),
+            "cz": float(np.random.rand()),
+            "sigma": float(np.random.uniform(0.01, 0.11)),
+            "amp": float(np.random.uniform(0.003, 8))
+        }
+    
+        spheres.append(sphere)
+    
+    # save to json
+    with open("universe_parameters.json", "w") as f:
+        json.dump(spheres, f, indent=4)
+
 
 X, Y, Z, box = load_universe()
 rho_x = box # tracer density field
