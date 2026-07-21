@@ -33,9 +33,9 @@ def compute_boost_COLA(GR_filepath, MG_filepath, z, delta_star=4, p=10, R=10):
 
     assert np.allclose(kMG, kGR)
 
-    boost_Pk = Pk_MG['power'].real/Pk_GR['power'].real
-    boost_Pk_marked = Pk_marked_MG['power'].real/Pk_marked_GR['power'].real
-    boost_Pk_cross = Pk_cross_MG['power'].real/Pk_cross_GR['power'].real
+    boost_Pk = (Pk_MG['power'].real-Pk_MG.attrs['shotnoise'])/(Pk_GR['power'].real-Pk_GR.attrs['shotnoise'])
+    boost_Pk_marked = (Pk_marked_MG['power'].real-Pk_marked_MG.attrs['shotnoise'])/(Pk_marked_GR['power'].real-Pk_marked_MG.attrs['shotnoise'])
+    boost_Pk_cross = (Pk_cross_MG['power'].real-Pk_cross_MG.attrs['shotnoise']) /(Pk_cross_GR['power'].real-Pk_cross_GR.attrs['shotnoise'])
 
     # save boosts
     COLA_path= SIMS_DIR / f"boostCOLAz{z}_p{p}_dstar{delta_star}_R{R}.npz"

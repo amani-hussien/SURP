@@ -33,7 +33,6 @@ plt.semilogx(k2, boost2n, label=f"N-body z=2", color='mediumorchid')
 
 plt.xlabel(r"$k\,[h\,\mathrm{Mpc}^{-1}]$")
 plt.ylabel(r"$B_{mm}(z,k)$")
-# plt.title(r"$R=15,\;p=10,\;d_\star=4$")
 plt.title(r"$B(z,k)$- matter field")
 plt.grid(True, which="both", alpha=0.3)
 plt.legend(ncol=3, fontsize=8, loc='lower right')

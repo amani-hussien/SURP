@@ -85,10 +85,9 @@ def compute_power_spectra(first, second=None, dk=None, kmin=None):
 
     if second is None:
         # compute 1d P(k)
-        # power spectrum 
         return Pk
     else:
-        Pk_mark = FFTPower(first=second, **kwargs).power # python unpacks
+        Pk_mark = FFTPower(first=second, **kwargs).power 
         Pk_cross = FFTPower(first=second,**kwargs, second=first).power
         return Pk, Pk_mark, Pk_cross
         
